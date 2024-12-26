@@ -1,0 +1,12 @@
+#!/bin/bash
+ARGOCD_CLUSTER_CONTEXT_NAME=$1
+RUN_ID=$(openssl rand -hex 4)
+REMOTE_CLUSTER_CONTEXT_NAME=${2:-$RUN_ID}
+K3D_ARGOCD_CLUSTER_CONTEXT_NAME=k3d-$ARGOCD_CLUSTER_CONTEXT_NAME
+K3D_REMOTE_CLUSTER_CONTEXT_NAME=k3d-$REMOTE_CLUSTER_CONTEXT_NAME
+echo "Creating remote cluster $REMOTE_CLUSTER_CONTEXT_NAME" 1>&2
+k3d cluster create $REMOTE_CLUSTER_CONTEXT_NAME 1>&2
+echo "Connecting remote cluster to argocd cluster network" 1>&2
+docker network connect $K3D_ARGOCD_CLUSTER_CONTEXT_NAME $K3D_REMOTE_CLUSTER_CONTEXT_NAME-server-0 1>&2
+echo "Remote cluster name:" 1>&2
+echo $REMOTE_CLUSTER_CONTEXT_NAME
