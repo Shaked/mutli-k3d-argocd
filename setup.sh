@@ -29,9 +29,11 @@ k3d cluster create $ARGOCD_CLUSTER_CONTEXT_NAME
 
 echo "Installing ArgoCD"
 kubectl --context $K3D_ARGOCD_CLUSTER_CONTEXT_NAME create namespace argocd
-kubectl --context $K3D_ARGOCD_CLUSTER_CONTEXT_NAME apply \
-    -n argocd \
-    -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.2/manifests/install.yaml
+helm upgrade \
+  --kube-context $K3D_ARGOCD_CLUSTER_CONTEXT_NAME \
+  --install argocd \
+  -n argocd argo/argo-cd \
+  --create-namespace
 
 REMOTE_CLUSTER_CONTEXT_NAME=$(./create-cluster.sh $ARGOCD_CLUSTER_CONTEXT_NAME)
 ./add-to-argo.sh $ARGOCD_CLUSTER_CONTEXT_NAME $REMOTE_CLUSTER_CONTEXT_NAME
