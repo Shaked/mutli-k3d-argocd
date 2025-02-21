@@ -53,6 +53,28 @@ metadata:
   namespace: argocd
 type: Opaque
 EOF
+
+kubectl --context $K3D_ARGOCD_CLUSTER_CONTEXT_NAME apply -n argocd -f -<<EOF
+apiVersion: v1
+data:
+  config: eyJ0bHNDbGllbnRDb25maWciOnsiaW5zZWN1cmUiOmZhbHNlfX0=
+  name: aW4tY2x1c3Rlcg==
+  server: aHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3Zj
+kind: Secret
+metadata:
+  annotations:
+    managed-by: argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+    cluster-purpose: argocd
+    cloud-provider: aws
+    environment: dev
+    environment-dev: "true"
+  name: incluster
+  namespace: argocd
+type: Opaque
+EOF
+
 kubectl --context $K3D_ARGOCD_CLUSTER_CONTEXT_NAME apply -n argocd -f -<<EOF
 apiVersion: argoproj.io/v1alpha1
 kind: Application
